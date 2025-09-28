@@ -6,10 +6,9 @@ export default function Page() {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef(null);
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     try { scrollRef.current?.scrollTo({ top: 1e9, behavior: "smooth" }); } catch {}
-  };
-  useEffect(scrollToBottom, [messages]);
+  }, [messages]);
 
   const onSend = async (text) => {
     const next = [...messages, { role: "user", content: text }];
