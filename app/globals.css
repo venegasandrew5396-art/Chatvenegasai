@@ -164,3 +164,11 @@ button {
   height: 1px;
   overflow: hidden;
 }
+/* image bubble */
+.msg-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
