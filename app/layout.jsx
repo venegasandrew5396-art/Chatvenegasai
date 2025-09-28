@@ -12,7 +12,6 @@ export default function RootLayout({ children }) {
       <body>
         <header className="site-header">
           <div className="site-title">venegasai</div>
-          <div className="site-sub">· chat</div>
         </header>
         {children}
       </body>
