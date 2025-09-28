@@ -27,7 +27,7 @@ export default function ChatComposer({ onSend, onAttach, onClear }) {
         <input ref={fileRef} type="file" accept="image/*" className="hidden-file" onChange={onPicked} />
         <input
           className="chat-input"
-          placeholder="Say it clean. I’ll be mean."
+          placeholder="Type something..."
           inputMode="text" autoComplete="off" autoCorrect="off" autoCapitalize="none" enterKeyHint="send"
           value={text} onChange={(e) => setText(e.target.value)}
         />
