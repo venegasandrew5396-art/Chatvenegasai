@@ -25,20 +25,16 @@ export default function Page() {
 
   const callChat = async (content, history, tryNum = 1) => {
     try {
-      console.log("CHAT →", { content, historyLen: history.length, tryNum });
       const res = await fetchWithTimeout("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ content, history })
-      }, 15000);
+      }, 20000);
 
-      console.log("CHAT status:", res.status);
-      const data = await res.json().catch(() => ({ reply: "Bad JSON from server." }));
-      console.log("CHAT data:", data);
+      const data = await res.json().catch(() => ({ reply: "Bad server response." }));
       return data;
     } catch (e) {
-      console.warn("CHAT fail:", e?.name || e);
-      if (tryNum < 2) return callChat(content, history, tryNum + 1); // one retry
+      if (tryNum < 2) return callChat(content, history, tryNum + 1);
       return { reply: "Network timeout. Try again." };
     }
   };
@@ -51,7 +47,11 @@ export default function Page() {
     const data = await callChat(text, next);
     setSending(false);
 
-    setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    // Support image replies: add imageUrl to the message item if present
+    setMessages((m) => [
+      ...m,
+      { role: "assistant", content: data.reply, imageUrl: data.imageUrl }
+    ]);
   };
 
   const onAttach = (files) => {
@@ -67,15 +67,21 @@ export default function Page() {
         <div className="messages">
           {messages.map((m, i) => (
             <div key={i} className={`msg ${m.role === "user" ? "user" : "bot"}`}>
-              {m.content}
+              {m.imageUrl ? (
+                <img src={m.imageUrl} alt={m.content || "generated image"} className="msg-img" />
+              ) : (
+                m.content
+              )}
             </div>
           ))}
-          {sending && (
-            <div className="msg bot">…</div>
-          )}
+          {sending && <div className="msg bot">…</div>}
         </div>
       </main>
-      <ChatComposer onSend={onSend} onAttach={onAttach} onClear={onClear} />
+      <ChatComposer
+        onSend={onSend}
+        onAttach={onAttach}
+        onClear={onClear}
+      />
     </div>
   );
 }
